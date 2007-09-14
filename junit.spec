@@ -33,7 +33,7 @@
 
 Name:		junit
 Version:	3.8.2
-Release:	%mkrel 1.2
+Release:	%mkrel 1.3
 Epoch:		0
 Summary:	Java regression test package
 License:	CPL
@@ -87,6 +87,8 @@ Demonstrations and samples for %{name}.
 # extract sources
 %{jar} xf src.jar
 cp %{SOURCE1} build.xml
+# javadoc fails if stylesheet.css is not there
+>stylesheet.css
 
 %build
 %ant dist
