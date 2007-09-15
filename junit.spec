@@ -33,7 +33,7 @@
 
 Name:		junit
 Version:	3.8.2
-Release:	%mkrel 1.3
+Release:	%mkrel 1.4
 Epoch:		0
 Summary:	Java regression test package
 License:	CPL
@@ -46,8 +46,6 @@ Source1:	junit3.8.2-build.xml
 BuildRequires:	ant
 BuildRequires:	jpackage-utils >= 0:1.6
 %if %{gcj_support}
-Requires(post): java-gcj-compat
-Requires(postun): java-gcj-compat
 BuildRequires:  java-gcj-compat-devel
 %else
 BuildArch:      noarch
