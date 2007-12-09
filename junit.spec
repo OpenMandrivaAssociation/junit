@@ -33,7 +33,7 @@
 
 Name:		junit
 Version:	3.8.2
-Release:	%mkrel 1.4
+Release:	%mkrel 4.3.1
 Epoch:		0
 Summary:	Java regression test package
 License:	CPL
@@ -85,8 +85,6 @@ Demonstrations and samples for %{name}.
 # extract sources
 %{jar} xf src.jar
 cp %{SOURCE1} build.xml
-# javadoc fails if stylesheet.css is not there
->stylesheet.css
 
 %build
 %ant dist
@@ -131,18 +129,10 @@ rm -rf $RPM_BUILD_ROOT
 %{clean_gcjdb}
 %endif
 
-%post javadoc
-rm -f %{_javadocdir}/%{name}
-ln -s %{name}-%{version} %{_javadocdir}/%{name}
-
-%postun javadoc
-if [ "$1" = "0" ]; then
-    rm -f %{_javadocdir}/%{name}
-fi
-
 %files
 %defattr(0644,root,root,0755)
 %doc README.html
+%doc cpl-v10.html
 %{_javadir}/*
 %if %{gcj_support}
 %attr(-,root,root) %{_libdir}/gcj/%{name}
