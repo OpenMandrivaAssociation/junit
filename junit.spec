@@ -1,4 +1,4 @@
-# Copyright (c) 2000-2005, JPackage Project
+# Copyright (c) 2000-2008, JPackage Project
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -33,16 +33,15 @@
 
 Name:		junit
 Version:	3.8.2
-Release:	%mkrel 4.3.2
+Release:	%mkrel 5.0.1
 Epoch:		0
 Summary:	Java regression test package
 License:	CPL
 Url:		http://www.junit.org/
 Group:		Development/Java
-#Vendor:		JPackage Project
-#Distribution:	JPackage
 Source0:	http://osdn.dl.sourceforge.net/junit/junit3.8.2.tar.bz2
 Source1:	junit3.8.2-build.xml
+Source2:        http://repo1.maven.org/maven2/junit/junit/3.8.2/junit-3.8.2.pom
 BuildRequires:	ant
 BuildRequires:	java-rpmbuild >= 0:1.6
 %if %{gcj_support}
@@ -84,7 +83,9 @@ Demonstrations and samples for %{name}.
 %setup -q -n %{name}%{version}
 # extract sources
 %{jar} xf src.jar
+rm -f src.jar
 cp %{SOURCE1} build.xml
+rm -rf javadoc
 
 %build
 %ant dist
@@ -96,6 +97,10 @@ cp %{SOURCE1} build.xml
 install -d -m 755 $RPM_BUILD_ROOT%{_javadir}
 install -m 644 %{name}%{version}/%{name}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}-%{version}.jar
 (cd $RPM_BUILD_ROOT%{_javadir} && for jar in *-%{version}*; do ln -sf ${jar} ${jar/-%{version}/}; done)
+%add_to_maven_depmap %{name} %{name} %{version} JPP %{name}
+# pom
+install -d -m 755 $RPM_BUILD_ROOT%{_datadir}/maven2/poms
+install -m 644 %{SOURCE2} $RPM_BUILD_ROOT%{_datadir}/maven2/poms/JPP-%{name}.pom
 # javadoc
 install -d -m 755 $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
 cp -pr %{name}%{version}/javadoc/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
@@ -121,11 +126,16 @@ done
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%if %{gcj_support}
+
 %post
+%update_maven_depmap
+%if %{gcj_support}
 %{update_gcjdb}
+%endif
 
 %postun
+%update_maven_depmap
+%if %{gcj_support}
 %{clean_gcjdb}
 %endif
 
@@ -134,6 +144,8 @@ rm -rf $RPM_BUILD_ROOT
 %doc README.html
 %doc cpl-v10.html
 %{_javadir}/*
+%{_datadir}/maven2
+%{_mavendepmapfragdir}
 %if %{gcj_support}
 %attr(-,root,root) %{_libdir}/gcj/%{name}
 %endif
