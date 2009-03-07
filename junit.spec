@@ -33,7 +33,7 @@
 
 Name:		junit
 Version:	3.8.2
-Release:	%mkrel 5.0.1
+Release:	%mkrel 5.0.2
 Epoch:		0
 Summary:	Java regression test package
 License:	CPL
