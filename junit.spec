@@ -28,18 +28,25 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
+%define gcj_support	1
+
 Name:		junit
 Version:	3.8.2
-Release:	%mkrel 6
+Release:	%mkrel 7
 Summary:	Java regression test package
 License:	CPL
 Url:		http://www.junit.org/
 Group:		Development/Java
 Source0:	http://osdn.dl.sourceforge.net/junit/junit3.8.2.tar.bz2
 Source1:	junit3.8.2-build.xml
+Source2:	http://repo1.maven.org/maven2/junit/junit/3.8.2/junit-3.8.2.pom
 BuildRequires:	ant
 BuildRequires:	java-rpmbuild >= 0:1.6
+%if %{gcj_support} 	 
+BuildRequires:	java-gcj-compat-devel 	 
+%else 	 
 BuildArch:      noarch
+%endif
 Buildroot:	%{_tmppath}/%{name}-%{version}-buildroot
 
 %description
@@ -85,6 +92,10 @@ cp %{SOURCE1} build.xml
 install -d -m 755 %{buildroot}%{_javadir}
 install -m 644 %{name}%{version}/%{name}.jar %{buildroot}%{_javadir}/%{name}-%{version}.jar
 (cd %{buildroot}%{_javadir} && for jar in *-%{version}*; do ln -sf ${jar} ${jar/-%{version}/}; done)
+%add_to_maven_depmap %{name} %{name} %{version} JPP %{name} 	 
+# pom 	 
+install -d -m 755 %{buildroot}%{_datadir}/maven2/poms 	 
+install -m 644 %{SOURCE2} %{buildroot}%{_datadir}/maven2/poms/JPP-%{name}.pom
 # javadoc
 install -d -m 755 %{buildroot}%{_javadocdir}/%{name}
 cp -pr %{name}%{version}/javadoc/* %{buildroot}%{_javadocdir}/%{name}
@@ -92,21 +103,55 @@ cp -pr %{name}%{version}/javadoc/* %{buildroot}%{_javadocdir}/%{name}
 install -d -m 755 %{buildroot}%{_datadir}/%{name}/demo/junit
 cp -pr %{name}%{version}/%{name}/* %{buildroot}%{_datadir}/%{name}/demo/junit
 
+%if %{gcj_support}
+%{_bindir}/aot-compile-rpm
+%endif
+
+# fix end-of-line 	 
+%{__perl} -pi -e 's/\r\n/\n/g' README.html
+
+for i in `find %{name}%{version}/doc -type f -name "*.htm*"`; do
+    %{__perl} -pi -e 's/\r\n/\n/g' $i
+done 	 
+
+for i in `find $RPM_BUILD_ROOT%{_datadir}/%{name} -type f -name "*.java"`; do
+    %{__perl} -pi -e 's/\r\n/\n/g' $i
+done
+
 install -d -m 755 %{buildroot}%{_docdir}/%{name}
 cp -p README.html %{buildroot}%{_docdir}/%{name}
+cp -par doc/* %{buildroot}%{_docdir}/%{name}
 
 %clean
 rm -rf %{buildroot}
 
+%post 	 
+%update_maven_depmap 	 
+%if %{gcj_support}
+%{update_gcjdb} 	 
+%endif 	 
+
+%postun 	 
+%update_maven_depmap 	 
+%if %{gcj_support} 	 
+%{clean_gcjdb} 	 
+%endif
+
 %files
 %defattr(-,root,root,-)
 %{_javadir}/*
-%doc %dir %{name}
+%doc %dir %{_docdir}/%{name}
 %doc %{_docdir}/%{name}/README.html
+%{_datadir}/maven2
+%{_mavendepmapfragdir}
+%if %{gcj_support}
+%{_libdir}/gcj/%{name} 	 
+%endif
 
 %files manual
 %defattr(-,root,root,-)
-%doc %{name}%{version}/doc
+%doc %{_docdir}/%{name}
+%exclude %{_docdir}/%{name}/README.html
 
 %files javadoc
 %defattr(-,root,root,-)
