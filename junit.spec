@@ -82,23 +82,23 @@ cp %{SOURCE1} build.xml
 ant dist
 
 %install
-rm -rf $RPM_BUILD_ROOT
+rm -rf %{buildroot}
 # jars
-install -d -m 755 $RPM_BUILD_ROOT%{_javadir}
-install -m 644 %{name}%{version}/%{name}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}-%{version}.jar
-(cd $RPM_BUILD_ROOT%{_javadir} && for jar in *-%{version}*; do ln -sf ${jar} ${jar/-%{version}/}; done)
+install -d -m 755 %{buildroot}%{_javadir}
+install -m 644 %{name}%{version}/%{name}.jar %{buildroot}%{_javadir}/%{name}-%{version}.jar
+(cd %{buildroot}%{_javadir} && for jar in *-%{version}*; do ln -sf ${jar} ${jar/-%{version}/}; done)
 # javadoc
-install -d -m 755 $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
-cp -pr %{name}%{version}/javadoc/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
+install -d -m 755 %{buildroot}%{_javadocdir}/%{name}-%{version}
+cp -pr %{name}%{version}/javadoc/* %{buildroot}%{_javadocdir}/%{name}-%{version}
 # demo
-install -d -m 755 $RPM_BUILD_ROOT%{_datadir}/%{name}/demo/junit # Not using %name for last part because it is 
+install -d -m 755 %{buildroot}%{_datadir}/%{name}/demo/junit # Not using %name for last part because it is 
                                                                 # part of package name
-cp -pr %{name}%{version}/%{name}/* $RPM_BUILD_ROOT%{_datadir}/%{name}/demo/junit
+cp -pr %{name}%{version}/%{name}/* %{buildroot}%{_datadir}/%{name}/demo/junit
 
-ln -s %{name}-%{version} $RPM_BUILD_ROOT%{_javadocdir}/%{name}
+ln -s %{name}-%{version} %{buildroot}%{_javadocdir}/%{name}
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root,-)
