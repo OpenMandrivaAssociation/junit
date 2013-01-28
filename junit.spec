@@ -1,5 +1,5 @@
 Name:           junit
-Version:        4.9
+Version:        4.10
 Release:        1
 Summary:        Java regression test package
 License:        CPL
@@ -75,7 +75,7 @@ popd
 
 # pom
 install -d -m 755 $RPM_BUILD_ROOT%{_datadir}/maven2/poms
-sed -e "s,@artifactId@,%name,g;s,@version@,%version,g" pom-template.xml >$RPM_BUILD_ROOT%{_datadir}/maven2/poms/JPP-%{name}.pom
+sed -e "s,@artifactId@,%name,g;s,@version@,%version,g" build/maven/pom-template.xml >$RPM_BUILD_ROOT%{_datadir}/maven2/poms/JPP-%{name}.pom
 %add_to_maven_depmap junit junit %{version} JPP %{name}
 
 # javadoc
