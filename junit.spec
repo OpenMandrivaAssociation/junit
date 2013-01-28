@@ -1,15 +1,15 @@
 Name:           junit
-Version:        4.8.2
+Version:        4.9
 Release:        1
 Summary:        Java regression test package
 License:        CPL
 URL:            http://www.junit.org/
 Group:          Development/Java
-# git clone --bare git://github.com/KentBeck/junit.git junit.git
-# mkdir junit-4.8.2
-# git --git-dir=junit.git --work-tree=junit-4.8.2 checkout r4.8.2
-# tar cjf junit-4.8.2.tar.bz2 junit-4.8.2/
-Source0:        junit-%{version}.tar.bz2
+# git clone git://github.com/KentBeck/junit.git junit.git
+# cd junit
+# git archive --format=tar -o junit-%version.tar --prefix junit-%version/ r%version
+# xz -9e junit-%version.tar
+Source0:        junit-%{version}.tar.xz
 Requires(post): jpackage-utils >= 0:1.7.4
 Requires(postun): jpackage-utils >= 0:1.7.4
 Requires:       hamcrest
@@ -75,7 +75,7 @@ popd
 
 # pom
 install -d -m 755 $RPM_BUILD_ROOT%{_datadir}/maven2/poms
-install -m 644 pom.xml $RPM_BUILD_ROOT%{_datadir}/maven2/poms/JPP-%{name}.pom
+sed -e "s,@artifactId@,%name,g;s,@version@,%version,g" pom-template.xml >$RPM_BUILD_ROOT%{_datadir}/maven2/poms/JPP-%{name}.pom
 %add_to_maven_depmap junit junit %{version} JPP %{name}
 
 # javadoc
