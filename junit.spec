@@ -19,6 +19,7 @@ BuildRequires:  jpackage-utils >= 0:1.7.4
 BuildRequires:  java-1.6.0-devel
 BuildRequires:  hamcrest
 BuildArch:      noarch
+%rename junit4
 
 %description
 JUnit is a regression testing framework written by Erich Gamma and Kent Beck. 
