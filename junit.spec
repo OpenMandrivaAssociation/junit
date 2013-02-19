@@ -1,24 +1,23 @@
-Name:           junit
-Version:        4.10
-Release:        1
-Summary:        Java regression test package
-License:        CPL
-URL:            http://www.junit.org/
-Group:          Development/Java
+Summary:	Java regression test package
+Name:		junit
+Version:	4.10
+Release:	1
+License:	CPL
+Group:		Development/Java
+Url:		http://www.junit.org/
 # git clone git://github.com/KentBeck/junit.git junit.git
 # cd junit
 # git archive --format=tar -o junit-%version.tar --prefix junit-%version/ r%version
 # xz -9e junit-%version.tar
-Source0:        junit-%{version}.tar.xz
-Requires(post): jpackage-utils >= 0:1.7.4
-Requires(postun): jpackage-utils >= 0:1.7.4
+Source0:	junit-%{version}.tar.xz
+BuildArch:	noarch
+BuildRequires:	ant
+BuildRequires:	hamcrest
+BuildRequires:	jpackage-utils >= 0:1.7.4
+BuildRequires:	java-1.6.0-devel
+Requires(post,postun):	jpackage-utils >= 0:1.7.4
 Requires:       hamcrest
 Requires:       java-1.6.0
-BuildRequires:  ant
-BuildRequires:  jpackage-utils >= 0:1.7.4
-BuildRequires:  java-1.6.0-devel
-BuildRequires:  hamcrest
-BuildArch:      noarch
 %rename junit4
 
 %description
@@ -29,30 +28,30 @@ JUnit is Open Source Software, released under the IBM Public License and
 hosted on SourceForge.
 
 %package manual
-Group:          Development/Java
-Summary:        Manual for %{name}
+Group:		Development/Java
+Summary:	Manual for %{name}
 
 %description manual
 Documentation for %{name}.
 
 %package javadoc
-Group:          Development/Java
-Summary:        Javadoc for %{name}
+Group:		Development/Java
+Summary:	Javadoc for %{name}
 Requires:       jpackage-utils
 
 %description javadoc
 Javadoc for %{name}.
 
 %package demo
-Group:          Development/Java
-Summary:        Demos for %{name}
+Group:		Development/Java
+Summary:	Demos for %{name}
 Requires:       %{name} = %{version}-%{release}
 
 %description demo
 Demonstrations and samples for %{name}.
 
 %prep
-%setup -q -n junit-%{version}
+%setup -q
 find . -type f -name "*.jar" | xargs -t rm
 ln -s $(build-classpath hamcrest/core) lib/hamcrest-core-1.1.jar
 perl -pi -e 's/\r$//g' stylesheet.css
@@ -64,32 +63,27 @@ export JAVA_HOME=%_prefix/lib/jvm/java-1.6.0
 ant -Dant.build.javac.source=1.5 dist
 
 %install
-rm -rf $RPM_BUILD_ROOT
-
 # jars
-install -d -m 755 $RPM_BUILD_ROOT%{_javadir}
-install -m 644 junit%{version}/junit-%{version}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}-%{version}.jar
-pushd $RPM_BUILD_ROOT%{_javadir} 
+install -d -m 755 %{buildroot}%{_javadir}
+install -m 644 junit%{version}/junit-%{version}.jar %{buildroot}%{_javadir}/%{name}-%{version}.jar
+pushd %{buildroot}%{_javadir} 
 ln -sf %{name}-%{version}.jar %{name}.jar
 popd
 
 # pom
-install -d -m 755 $RPM_BUILD_ROOT%{_datadir}/maven2/poms
-sed -e "s,@artifactId@,%name,g;s,@version@,%version,g" build/maven/pom-template.xml >$RPM_BUILD_ROOT%{_datadir}/maven2/poms/JPP-%{name}.pom
+install -d -m 755 %{buildroot}%{_datadir}/maven2/poms
+sed -e "s,@artifactId@,%name,g;s,@version@,%version,g" build/maven/pom-template.xml >%{buildroot}%{_datadir}/maven2/poms/JPP-%{name}.pom
 %add_to_maven_depmap junit junit %{version} JPP %{name}
 
 # javadoc
-install -d -m 755 $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
-cp -pr junit%{version}/javadoc/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
-ln -s %{name}-%{version} $RPM_BUILD_ROOT%{_javadocdir}/%{name}
+install -d -m 755 %{buildroot}%{_javadocdir}/%{name}-%{version}
+cp -pr junit%{version}/javadoc/* %{buildroot}%{_javadocdir}/%{name}-%{version}
+ln -s %{name}-%{version} %{buildroot}%{_javadocdir}/%{name}
 
 # demo
-install -d -m 755 $RPM_BUILD_ROOT%{_datadir}/%{name}/demo/junit # Not using %%name for last part because it is 
+install -d -m 755 %{buildroot}%{_datadir}/%{name}/demo/junit # Not using %%name for last part because it is 
                                                                 # part of package name
-cp -pr junit%{version}/junit/* $RPM_BUILD_ROOT%{_datadir}/%{name}/demo/junit
-
-%clean
-rm -rf $RPM_BUILD_ROOT
+cp -pr junit%{version}/junit/* %{buildroot}%{_datadir}/%{name}/demo/junit
 
 %post
 %update_maven_depmap
@@ -98,7 +92,6 @@ rm -rf $RPM_BUILD_ROOT
 %update_maven_depmap
 
 %files
-%defattr(0644,root,root,0755)
 %doc cpl-v10.html README.html
 %{_javadir}/%{name}.jar
 %{_javadir}/%{name}-%{version}.jar
@@ -106,94 +99,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_mavendepmapfragdir}/*
 
 %files demo
-%defattr(0644,root,root,0755)
 %{_datadir}/%{name}
 
 %files javadoc
-%defattr(0644,root,root,0755)
 %{_javadocdir}/%{name}-%{version}
 %{_javadocdir}/%{name}
 
 %files manual
-%defattr(0644,root,root,0755)
 %doc junit%{version}/doc/*
 
-
-
-%changelog
-* Sat May 14 2011 Oden Eriksson <oeriksson@mandriva.com> 4.8.2-3
-+ Revision: 674567
-- rebuild
-
-* Sat May 14 2011 Oden Eriksson <oeriksson@mandriva.com> 4.8.2-2
-+ Revision: 674552
-- drop the undefined epoch
-- rebuild
-
-  + Guilherme Moro <guilherme@mandriva.com>
-    - Sync with fedora
-
-* Fri Jan 23 2009 Jérôme Soyer <saispo@mandriva.org> 0:4.5-3.0.2mdv2009.1
-+ Revision: 332739
-- New upstream release
-
-* Wed Aug 06 2008 Thierry Vignaud <tv@mandriva.org> 0:4.4-3.0.2mdv2009.0
-+ Revision: 264757
-- rebuild early 2009.0 package (before pixel changes)
-
-* Tue May 13 2008 Alexander Kurtakov <akurtakov@mandriva.org> 0:4.4-1.0.2mdv2009.0
-+ Revision: 206543
-- add artifactId junit:junit4 to the depmap
-
-* Fri Apr 18 2008 Alexander Kurtakov <akurtakov@mandriva.org> 0:4.4-1.0.1mdv2009.0
-+ Revision: 195643
-- new version
-
-* Mon Feb 18 2008 Alexander Kurtakov <akurtakov@mandriva.org> 0:4.3.1-4.0.1mdv2008.1
-+ Revision: 171990
-- use %%{gcj_compile} macro
-
-* Thu Feb 07 2008 Alexander Kurtakov <akurtakov@mandriva.org> 0:4.3.1-3.0.1mdv2008.1
-+ Revision: 163776
-- add maven pom
-
-* Thu Jan 10 2008 David Walluck <walluck@mandriva.org> 0:4.3.1-2.0.4mdv2008.1
-+ Revision: 147444
-- bump release
-
-* Fri Jan 04 2008 David Walluck <walluck@mandriva.org> 0:4.3.1-2.0.3mdv2008.1
-+ Revision: 145454
-- rebuild with gcj support
-
-  + Olivier Blin <oblin@mandriva.com>
-    - restore BuildRoot
-
-  + Thierry Vignaud <tv@mandriva.org>
-    - kill re-definition of %%buildroot on Pixel's request
-
-* Sun Dec 16 2007 Anssi Hannula <anssi@mandriva.org> 0:4.3.1-2.0.2mdv2008.1
-+ Revision: 120955
-- buildrequire java-rpmbuild, i.e. build with icedtea on x86(_64)
-
-* Sun Dec 09 2007 Alexander Kurtakov <akurtakov@mandriva.org> 0:4.3.1-2.0.1mdv2008.1
-+ Revision: 116715
-- disable gcj_support - aot fails
-
-  + Anssi Hannula <anssi@mandriva.org>
-    - rebuild to filter out autorequires of GCJ AOT objects
-    - remove unnecessary Requires(post) on java-gcj-compat
-
-* Fri Jun 29 2007 David Walluck <walluck@mandriva.org> 0:4.3.1-1.2mdv2008.0
-+ Revision: 45723
-- disable test run for now
-- fix jar contents
-- fix typo in %%{__ln_s} macro
-- bump release
-- enable aot-compile-rpm
-- enable gcj support
-- Import junit4
-
-
-
-* Fri Jun 29 2007 David Walluck <walluck@mandriva.org> 0:4.3.1-1.1mdv2008.0
-- release
