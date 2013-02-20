@@ -1,5 +1,3 @@
-%bcond_without bootstrap
-
 Summary:	Java regression test package
 Name:		junit
 Version:	4.10
@@ -14,15 +12,12 @@ Url:		http://www.junit.org/
 Source0:	junit-%{version}.tar.xz
 BuildArch:	noarch
 BuildRequires:	ant
-%if !%{with bootstrap}
 BuildRequires:	hamcrest
-Requires:		hamcrest
-%endif
-
 BuildRequires:	jpackage-utils >= 0:1.7.4
 BuildRequires:	java-1.6.0-devel
 Requires(post,postun):	jpackage-utils >= 0:1.7.4
 Requires:		java-1.6.0
+Requires:		hamcrest
 %rename junit4
 
 %description
