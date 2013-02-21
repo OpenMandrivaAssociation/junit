@@ -1,6 +1,2 @@
-removed_sources:
-  junit-4.8.2.tar.bz2: 53268323cb4ce8cbf64a714bd1e871f121c26094
-  junit-4.9.tar.xz: dd5261e0b0973591583ccd783c6da2e7d2d98d92
 sources:
   junit-4.10.tar.xz: 2877d7ed419d2d45ad8aa0b160b85d43316b588d
-  junit3.8.2.tar.bz2: 48851ef726a3d97bcf90fdca53da3a7c15ca33cb
