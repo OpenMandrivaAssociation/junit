@@ -10,11 +10,12 @@ Url:		http://www.junit.org/
 # git archive --format=tar -o junit-%version.tar --prefix junit-%version/ r%version
 # xz -9e junit-%version.tar
 Source0:	junit-%{version}.tar.xz
+Patch0:		http://patch-tracker.debian.org/patch/series/dl/junit4/4.10-3/java7-ignore-test.patch
 BuildArch:	noarch
 BuildRequires:	ant
 BuildRequires:	hamcrest
 BuildRequires:	jpackage-utils >= 0:1.7.4
-BuildRequires:	java-1.6.0-devel
+BuildRequires:	java-1.7.0-devel
 Requires(post,postun):	jpackage-utils >= 0:1.7.4
 Requires:		java-1.6.0
 Requires:		hamcrest
@@ -52,6 +53,7 @@ Demonstrations and samples for %{name}.
 
 %prep
 %setup -q
+%patch0 -p1 -b .ignoretest~
 find . -type f -name "*.jar" | xargs -t rm
 ln -s $(build-classpath hamcrest/core) lib/hamcrest-core-1.1.jar
 perl -pi -e 's/\r$//g' stylesheet.css
@@ -59,7 +61,7 @@ perl -pi -e 's/\r$//g' stylesheet.css
 %build
 export CLASSPATH=
 export OPT_JAR_LIST=:
-export JAVA_HOME=%_prefix/lib/jvm/java-1.6.0
+export JAVA_HOME=%{_jvm/java-1.7.0
 ant -Dant.build.javac.source=1.5 dist
 
 %install
