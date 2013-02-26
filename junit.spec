@@ -61,7 +61,7 @@ perl -pi -e 's/\r$//g' stylesheet.css
 %build
 export CLASSPATH=
 export OPT_JAR_LIST=:
-export JAVA_HOME=%{_jvm/java-1.7.0
+export JAVA_HOME=%{_jvmdir}/java-1.7.0
 ant -Dant.build.javac.source=1.5 dist
 
 %install
