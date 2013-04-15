@@ -1,7 +1,7 @@
 Summary:	Java regression test package
 Name:		junit
 Version:	4.10
-Release:	2
+Release:	3
 License:	CPL
 Group:		Development/Java
 Url:		http://www.junit.org/
@@ -17,7 +17,7 @@ BuildRequires:	hamcrest
 BuildRequires:	jpackage-utils >= 0:1.7.4
 BuildRequires:	java-1.7.0-devel
 Requires(post,postun):	jpackage-utils >= 0:1.7.4
-Requires:		java-1.6.0
+Requires:		java >= 1.6.0
 Requires:		hamcrest
 %rename junit4
 
