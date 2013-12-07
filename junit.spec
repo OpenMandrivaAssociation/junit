@@ -1,7 +1,7 @@
 Summary:	Java regression test package
 Name:		junit
 Version:	4.10
-Release:	5
+Release:	6
 License:	CPL
 Group:		Development/Java
 Url:		http://www.junit.org/
