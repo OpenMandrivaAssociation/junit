@@ -53,6 +53,10 @@ BuildRequires:  jpackage-utils >= 0:1.7.4
 BuildRequires:  java-devel >= 1:1.6.0
 BuildRequires:  hamcrest
 BuildRequires:  perl(Digest::MD5)
+%if 0%{?fedora}
+%else
+BuildRequires:  zip
+%endif
 
 Requires:       hamcrest
 Requires:       java >= 1:1.6.0
