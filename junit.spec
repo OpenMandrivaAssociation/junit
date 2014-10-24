@@ -31,12 +31,12 @@
 
 Name:           junit
 Version:        4.11
-Release:        7.1%{?dist}
+Release:        7.2%{?dist}
 Epoch:          0
 Summary:        Java regression test package
 License:        CPL
 URL:            http://www.junit.org/
-
+Group:			Development/Java
 BuildArch:      noarch
 
 # ./clean-tarball.sh %{version}
