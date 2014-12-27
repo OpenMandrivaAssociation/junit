@@ -1,42 +1,12 @@
 %{?_javapackages_macros:%_javapackages_macros}
-# Copyright (c) 2000-2008, JPackage Project
-# All rights reserved.
-#
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions
-# are met:
-#
-# 1. Redistributions of source code must retain the above copyright
-#    notice, this list of conditions and the following disclaimer.
-# 2. Redistributions in binary form must reproduce the above copyright
-#    notice, this list of conditions and the following disclaimer in the
-#    documentation and/or other materials provided with the
-#    distribution.
-# 3. Neither the name of the JPackage Project nor the names of its
-#    contributors may be used to endorse or promote products derived
-#    from this software without specific prior written permission.
-#
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-#
-
 Name:           junit
+Epoch:          1
 Version:        4.11
-Release:        9
-Epoch:          0
+Release:        14.1
 Summary:        Java regression test package
+Group:		Development/Java
 License:        CPL
 URL:            http://www.junit.org/
-Group:			Development/Java
 BuildArch:      noarch
 
 # ./clean-tarball.sh %{version}
@@ -49,20 +19,13 @@ Patch0:         %{name}-no-hamcrest-src.patch
 
 BuildRequires:  ant
 BuildRequires:  ant-contrib
-BuildRequires:  jpackage-utils >= 0:1.7.4
-BuildRequires:  java-devel >= 1:1.6.0
+BuildRequires:  java-devel
 BuildRequires:  hamcrest
 BuildRequires:  perl(Digest::MD5)
-%if 0%{?fedora}
-%else
-BuildRequires:  zip
-%endif
+BuildRequires:	zip
 
 Requires:       hamcrest
-Requires:       java >= 1:1.6.0
-
-Provides:       junit4 = %{epoch}:%{version}-%{release}
-Obsoletes:      junit4 < %{epoch}:%{version}-%{release}
+Requires:       java-headless
 
 %description
 JUnit is a regression testing framework written by Erich Gamma and Kent Beck. 
@@ -71,30 +34,20 @@ Source Software, released under the Common Public License Version 1.0 and
 hosted on GitHub.
 
 %package manual
-
 Summary:        Manual for %{name}
-Provides:       junit4-manual = %{epoch}:%{version}-%{release}
-Obsoletes:      junit4-manual < %{epoch}:%{version}-%{release}
 
 %description manual
 Documentation for %{name}.
 
 %package javadoc
-
 Summary:        Javadoc for %{name}
-Requires:       jpackage-utils
-Provides:       junit4-javadoc = %{epoch}:%{version}-%{release}
-Obsoletes:      junit4-javadoc < %{epoch}:%{version}-%{release}
 
 %description javadoc
 Javadoc for %{name}.
 
 %package demo
-
 Summary:        Demos for %{name}
 Requires:       %{name} = %{epoch}:%{version}-%{release}
-Provides:       junit4-demo = %{epoch}:%{version}-%{release}
-Obsoletes:      junit4-demo < %{epoch}:%{version}-%{release}
 
 %description demo
 Demonstrations and samples for %{name}.
@@ -125,8 +78,6 @@ zip -u %{name}%{version}/%{name}-%{version}.jar META-INF/MANIFEST.MF
 # jars
 install -d -m 755 %{buildroot}%{_javadir}
 install -m 644 %{name}%{version}/%{name}-%{version}.jar %{buildroot}%{_javadir}/%{name}.jar
-# Many packages still use the junit4.jar directly
-ln -s %{_javadir}/%{name}.jar %{buildroot}%{_javadir}/%{name}4.jar
 
 # pom
 install -d -m 755 %{buildroot}%{_mavenpomdir}
@@ -143,12 +94,8 @@ install -d -m 755 %{buildroot}%{_datadir}/%{name}/demo/%{name}
 cp -pr %{name}%{version}/%{name}/* %{buildroot}%{_datadir}/%{name}/demo/%{name}
 
 
-%files
+%files -f .mfiles
 %doc LICENSE README CODING_STYLE
-%{_javadir}/%{name}.jar
-%{_javadir}/%{name}4.jar
-%{_mavenpomdir}/*
-%{_mavendepmapfragdir}/*
 
 %files demo
 %doc LICENSE
@@ -163,6 +110,29 @@ cp -pr %{name}%{version}/%{name}/* %{buildroot}%{_datadir}/%{name}/demo/%{name}
 %doc junit%{version}/doc/*
 
 %changelog
+* Mon Jun  9 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 1:4.11-14
+- Add epoch as workaround for a bug in koji-shadow
+
+* Mon Jun  9 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 4.11-13
+- Remove epoch
+
+* Sun Jun  8 2014 Peter Robinson <pbrobinson@fedoraproject.org> 4.11-12
+- Re-add Epoch. Once you have it you can't remove it as it breaks upgrade paths
+
+* Sun Jun 08 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 4.11-11
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
+
+* Thu May 22 2014 Alexander Kurtakov <akurtako@redhat.com> 4.11-10
+- Update OSGi manifest to state 4.11.
+
+* Wed May 21 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 4.11-9
+- Update to current packaging guidelines
+- Drop old Obsoletes/Provides for junit4 rename
+- Disable test which fails with Java 8
+
+* Tue Mar 04 2014 Stanislav Ochotnicky <sochotnicky@redhat.com> - 0:4.11-8
+- Use Requires: java-headless rebuild (#1067528)
+
 * Fri Aug 23 2013 Michal Srb <msrb@redhat.com> - 0:4.11-7
 - Drop "-SNAPSHOT" from version ID
 - See: https://lists.fedoraproject.org/pipermail/java-devel/2013-August/004923.html
