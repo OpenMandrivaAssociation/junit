@@ -2,7 +2,7 @@
 Name:           junit
 Epoch:          1
 Version:        4.12
-Release:        1.1
+Release:        2.1
 Summary:        Java regression test package
 Group:		Development/Java
 License:        EPL
@@ -63,6 +63,7 @@ sed s/@version@/%{version}/ src/main/java/junit/runner/Version.java.template >sr
       <configuration>
         <instructions>
           <Bundle-SymbolicName>org.junit</Bundle-SymbolicName>
+	  <Export-Package>{local-packages},!org.hamcrest*,*;x-internal:=true</Export-Package>
           <_nouses>true</_nouses>
         </instructions>
       </configuration>
