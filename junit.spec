@@ -6,7 +6,7 @@ Release:        2.2
 Summary:        Java regression test package
 Group:		Development/Java
 License:        EPL
-URL:            http://www.junit.org/
+URL:            https://www.junit.org/
 BuildArch:      noarch
 
 # ./clean-tarball.sh %{version}
